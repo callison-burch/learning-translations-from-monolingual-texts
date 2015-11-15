@@ -1,9 +1,9 @@
 
 Should run this file from /export/projects/tto16/users/anni/BLI as that is the directory which has all the dependency files.
 
-HOW TO RUN
+##HOW TO RUN
 
-python rerank.py language sub_dir config_file
+python rerank_refactored.py --language $1 --subdirectory withAffixFeatsNoAffixCands/ --config_file rerankll.m3ps.evalonly.config --l1 $NUM --l2 $NUM
 
 e.g. python rerank.py az withAffixFeatsNoAffixCands_ReTrain /home/ccb/AnnRerankSubDir/rerankll.m3ps.evalonly.config
 
@@ -70,7 +70,7 @@ Then run vowpal rabbit with either linear or logistic regression depending on co
 
 After this it computes the accuracies of the predictions and checks if any of the correct answers are in the top sorted candidates or not  
 
-VOWPAL Section
+##VOWPAL Section
 
 The following can be done about the reviewers’ comments:
 1. The vw package has a neural network mode, as well as the option to add quadratic and cubic features automatically. We can test with them individually to check the accuracy.
@@ -80,7 +80,7 @@ To run one language based on the model of another language, use crossLangTrainEv
 
 Use evalIndFeats.py to evaluate individual features
 
-VW
+##VW
 
 In the <subdirectory>/<language dir>
 We have 
