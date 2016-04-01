@@ -623,8 +623,9 @@ def main():
 
     # List of all words scored for wiki and crawls (intersection of two lists)
     allFRWords_wiki=[x.strip().split("\t")[1] for x in codecs.open(wikiwords,'r','utf-8').readlines()]  
-    allFRWords_crawls=[x.strip().split("\t")[1] for x in codecs.open(crawlswords,'r','utf-8').readlines()]  
-    allFRWords=[x for x in allFRWords_wiki if x in allFRWords_crawls]
+    allFRWords_crawls=[x.strip().split("\t")[1] for x in codecs.open(crawlswords,'r','utf-8').readlines()]
+    allFRWords_crawls_dict = defaultdict(allFRWords_crawls)
+    allFRWords=[x for x in allFRWords_wiki if x in allFRWords_crawls_dict]
 
     allScores={} #allScores[scorename][fr][en]=score
     allFRWords_Scored=[] # List of all words that were ACTUALLY scored

@@ -53,8 +53,8 @@ The script will run the evaluation and print out the scores for the rankings. Th
 
 ## Steps
 1. This is an example of a full run with the Azeri language. First make sure you have mturk.az in /nlp/users/shreejit/MTurkDicts (according to the example config file)
-2. Make sure you have the az/crawls-minf10/output directory, where az is in the inputDataDirectory. It should have the following files:
-    > aggmrr.eval
+2. Make sure you have the az/crawls-minf10/output directory, where az is in the inputDataDirectory. For now we are looking for this exact directory name, which means that within the az language directory, there is a crawls directory which contains data for only words that appear more than 10 times in the corpus. The output subdirectory is the directory with processed data. It should have the following files:
+    - > aggmrr.eval
     > aggmrr.scored
     > context.eval
     > context.scored
@@ -66,8 +66,8 @@ The script will run the evaluation and print out the scores for the rankings. Th
 3. Make sure you have the burstinessMeasures directory in the inputDataDirectory (the cwd). It should have:
     - burst.az.az
     - burst.az.en
-4. Make sure you have the config file. It should look something like this:
-    - >useprefix=true
+4. Make sure you have the config file. This is used by the inductor and evaluator. It should look something like this:
+    - > useprefix=true
     > useprefixcands=false
     > inputDataDirectory=.
     > burstinessMeasuresDirectory=burstinessMeasures
@@ -87,10 +87,10 @@ The script will run the evaluation and print out the scores for the rankings. Th
     > readData=true
     > writeData=true
     > doClassification=true
-5. Run the command with all directories, the dictionary and the config file in the appropriate places. E.g.
+5. Run the following command with the language, output subdirectory, config file and regularization parameters. E.g.
     - > python rerank_refactored.py --language az --subdirectory withAffixFeatsNoAffixCands/ --config_file rerankll.m3ps.ref.config --l1 0.01 --l2 0.01
-6. You should now have a withAffixFeatsNoAffixCands directory, with az inside it in the current working directory. It should have the following files:
-    - az.NoEnRanked
+6. You should now have a withAffixFeatsNoAffixCands directory, with az inside it in the current working directory (./withAffixFeatsNoAffixCands/az). It should have the following files:
+    - az.NoEnRanked (describe the files)
     - blind.data
     - blind.data.index
     - test.data
@@ -104,7 +104,7 @@ The script will run the evaluation and print out the scores for the rankings. Th
     - train.data.index
     - train.model
     - train.model.readable
-7. The program should also give the accuracy of the run in a format like so:
+7. The program should also give the accuracy of the run to stdout in a format like so:
     - > Mean reciprocal rank of AGG-MRR ranks: 0.0
       > Mean reciprocal rank of ML-learned weighted ranks: 0.132917895797
       >
@@ -119,3 +119,7 @@ The script will run the evaluation and print out the scores for the rankings. Th
       > Accuracy in top-100:
       > MRR: 1.0
       > Cand: 0.492600422833
+
+## Printing translations for specific words in the foreign language
+
+## Description of file formats
