@@ -4,7 +4,7 @@ The translator.py translates a given text file with the induced translations in 
 output directories created by rerank_refactored.py. 
 
 ## How to Run
-> python translator.py -i text_file -t translation_file
+> python translator.py -i text_file -t translation_file -o translation_output_file
 > 
 
 ## Prerequisites

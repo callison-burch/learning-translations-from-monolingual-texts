@@ -54,15 +54,26 @@ def read_flat_file(text_file):
 def translate_text_with_dict(tokens, dict, prefix=None):
     t = 0
     output_tokens = []
+    token_translation_dict = {}
     for raw_token in tokens:
         token = raw_token.strip().lower()[:prefix]
         if token in dict:
+            if token not in token_translation_dict:
+                token_translation_dict[token] = dict[token]
             output_tokens.append(dict[token])
             t += 1
         else:
             output_tokens.append(token)
 
-    return output_tokens, t / float(len(tokens))
+    return output_tokens, token_translation_dict, t / float(len(tokens))
+
+def write_dict_to_file(trans_dict, output_file):
+    text = ""
+    for key in trans_dict:
+        line = key + " " + trans_dict[key] + "\n"
+        text += line
+    print "Writing {} to {}".format(text, output_file)
+    output_file.write(text)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Given the induced translation file and text file, outputs the translated"
@@ -70,6 +81,8 @@ if __name__ == "__main__":
                                    formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument("--text_file", "-i", nargs='?', type=argparse.FileType('r'), default=sys.stdin, help="input text file")
     parser.add_argument("--translation_file", "-t", nargs='?', type=argparse.FileType('r'), default=sys.stdin, help="translation file")
+    parser.add_argument("--output_file", "-o", nargs='?', type=argparse.FileType('w'), default=sys.stdin, help="translations output file")
+
     try:
         args = parser.parse_args()
     except IOError as msg:
@@ -87,14 +100,16 @@ if __name__ == "__main__":
         fr_en_dict = read_translations(translation_file)
         cPickle.dump(fr_en_dict, open(dict_pickle_file, "wb"))
 
-    print "Dictionary found {} of size {}".format(fr_en_dict, len(fr_en_dict))
+    # print "Dictionary found {} of size {}".format(fr_en_dict, len(fr_en_dict))
     tokens = flat_tokens = read_flat_file(text_file)
-    translated, metrics = translate_text_with_dict(tokens, fr_en_dict)
+    translated, transdict, metrics = translate_text_with_dict(tokens, fr_en_dict)
     print metrics
+
+    write_dict_to_file(transdict, args.output_file)
 
     prefix_fr_en_dict = {}
     for i in xrange(4, 8):
         prefix_fr_en_dict[i] = translate_dict_to_n_prefix(fr_en_dict, i)
-        print "Dictionary found {} of size {}".format(prefix_fr_en_dict[i], len(prefix_fr_en_dict[i]))
-        translated, metrics = translate_text_with_dict(tokens, prefix_fr_en_dict[i], i)
+        # print "Dictionary found {} of size {}".format(prefix_fr_en_dict[i], len(prefix_fr_en_dict[i]))
+        translated, transdict, metrics = translate_text_with_dict(tokens, prefix_fr_en_dict[i], i)
         print "Metrics for prefix length i={} {}".format(i, metrics)
