@@ -4,8 +4,12 @@ The translator.py translates a given text file with the induced translations in 
 output directories created by rerank_refactored.py. 
 
 ## How to Run
-> python translator.py -i text_file -t translation_file -o translation_output_file
-> 
+> python translator.py -i text_file -t translation_file -o translation_output_file -k top_k_translations
+
+The output file will contain the words that have been successfully translated by lookup of the words in the translation file in the format
+> word __space__ : __space__ tab separated translation candidates in decreasing order of their score
+e.g.
+> éjjel : only out but more all three two made has see
 
 ## Prerequisites
     1. The text file to be translated
