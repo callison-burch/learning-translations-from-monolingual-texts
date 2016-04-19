@@ -73,19 +73,23 @@ def read_flat_file(text_file):
 
 
 def translate_text_with_dict(tokens, induced_dict, mturk_dict, prefix=None):
-    t = 0
+    t = 0; m = 0; tot = 0
     output_tokens = []
     token_translation_dict = {}
-    file_name = "all_tokens" + str(prefix) + ".hun.txt" if not prefix is None else "all_tokens.hun.txt"
+    file_name = "all_tokens" + str(prefix) + ".txt" if not prefix is None else "all_tokens.txt"
     with open(file_name, "w") as f:
         for raw_token in tokens:
             output_line = []
             token = raw_token.strip().lower()[:prefix]
             output_line.append(token)
 
+            if token in mturk_dict or token in induced_dict:
+                tot += 1
+                
             if token in mturk_dict:
                 output_line.append(mturk_dict[token])
                 # print "Md {} = {}".format(token, mturk_dict[token])
+                m += 1
             else:
                 output_line.append("__")
 
@@ -103,7 +107,7 @@ def translate_text_with_dict(tokens, induced_dict, mturk_dict, prefix=None):
             # print "output line {}".format(output_line)
             f.write("\t:\t".join(output_line) + "\n")
 
-    return output_tokens, token_translation_dict, t / float(len(tokens))
+    return output_tokens, token_translation_dict, t / float(len(tokens)), m / float(len(tokens)), tot / float(len(tokens))
 
 def write_dict_to_file(trans_dict, output_file):
     text = ""
@@ -112,6 +116,11 @@ def write_dict_to_file(trans_dict, output_file):
         text += line
     # print "Writing {} to {}".format(text, output_file)
     output_file.write(text)
+
+def print_lookup_metrics(i_coverate, m_coverage, tot_coverage, prefix=None):
+    print "Induced dictionary hit rate {} MTurk dictionary hit rate {} Total hit rate {} for prefix {}".format(
+        i_coverage * 100, m_coverage * 100, tot_coverage * 100, prefix)
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Given the induced translation file and text file, outputs the translated"
@@ -149,8 +158,8 @@ if __name__ == "__main__":
     print "MTurk Dictionary size {}".format(len(mturk_dict))
     tokens = read_flat_file(text_file)
 
-    translated, transdict, metrics = translate_text_with_dict(tokens, induced_dict, mturk_dict)
-    print metrics
+    translated, transdict, i_coverage, m_coverage, tot_coverage = translate_text_with_dict(tokens, induced_dict, mturk_dict)
+    print_lookup_metrics(i_coverage, m_coverage, tot_coverage)
 
     write_dict_to_file(transdict, args.output_file)
 
@@ -159,5 +168,6 @@ if __name__ == "__main__":
     for i in xrange(4, 8):
         prefix_fr_en_dict[i] = translate_dict_to_n_prefix(induced_dict, i)
         # print "Dictionary found {} of size {}".format(prefix_fr_en_dict[i], len(prefix_fr_en_dict[i]))
-        translated, transdict, metrics = translate_text_with_dict(tokens, prefix_fr_en_dict[i], mturk_dict, i)
-        print "Metrics for prefix length i={} {}".format(i, metrics)
+        translated, transdict, i_coverage, m_coverage, tot_coverage = translate_text_with_dict(tokens, prefix_fr_en_dict[i], mturk_dict, i)
+        print_lookup_metrics(i_coverage, m_coverage, tot_coverage, i)
+
