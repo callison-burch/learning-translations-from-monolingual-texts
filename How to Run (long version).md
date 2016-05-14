@@ -132,7 +132,7 @@ This file generates:
 `test.rankcompare`
 
 3. will print out
-4. 
+
 		mean reciprocal rank of MRR
 		mean reciprocal rank of discriminative (ML) method
 		top1,10 and 100 accuracies for 
